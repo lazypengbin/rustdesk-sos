@@ -254,6 +254,8 @@ class _DesktopHomePageState extends State<DesktopHomePage>
   }
 
   Widget buildPopupMenu(BuildContext context) {
+    // AUTO_PATCH_SOS_HIDE_POPUP_MENU
+    if (bind.isIncomingOnly()) return const SizedBox();
     final textColor = Theme.of(context).textTheme.titleLarge?.color;
     RxBool hover = false.obs;
     return InkWell(
@@ -357,7 +359,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                           ),
                           onHover: (value) => refreshHover.value = value,
                         ).marginOnly(right: 8, top: 4),
-                      if (!bind.isDisableSettings())
+                      if (!bind.isDisableSettings() && !bind.isIncomingOnly()) /* // AUTO_PATCH_SOS_HIDE_EDIT_PWD */
                         InkWell(
                           child: Tooltip(
                             message: translate('Change Password'),

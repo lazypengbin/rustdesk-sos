@@ -80,9 +80,7 @@ class _OnlineStatusWidgetState extends State<OnlineStatusWidget> {
 
     setupServerWidget() => Flexible(
           child: Offstage(
-            offstage: !(!_svcStopped.value &&
-                stateGlobal.svcStatus.value == SvcStatus.ready &&
-                _svcIsUsingPublicServer.value),
+            offstage: true, // AUTO_PATCH_HIDE_SETUP_SERVER_TIP
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
